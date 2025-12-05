@@ -96,24 +96,17 @@ public class ArrayTabulatedFunction implements TabulatedFunction, Externalizable
 
         TabulatedFunction other = (TabulatedFunction) o;
         if (this.getPointsCount() != other.getPointsCount()) return false;
-
         if (other instanceof ArrayTabulatedFunction arr) {
             FunctionPoint[] otherPoints = arr.getPoints();
             for (int i = 0; i < points.length; i++) {
-                if (Double.compare(points[i].getX(), otherPoints[i].getX()) != 0 ||
-                        Double.compare(points[i].getY(), otherPoints[i].getY()) != 0) {
+                if (!points[i].equals(otherPoints[i]))
                     return false;
-                }
             }
             return true;
         }
-
         for (int i = 0; i < points.length; i++) {
-            FunctionPoint p = other.getPoint(i);
-            if (Double.compare(points[i].getX(), p.getX()) != 0 ||
-                    Double.compare(points[i].getY(), p.getY()) != 0) {
+            if (!points[i].equals(other.getPoint(i)))
                 return false;
-            }
         }
         return true;
     }
@@ -122,11 +115,7 @@ public class ArrayTabulatedFunction implements TabulatedFunction, Externalizable
     public int hashCode() {
         int hash = points.length;
         for (FunctionPoint p : points) {
-            long xBits = Double.doubleToLongBits(p.getX());
-            long yBits = Double.doubleToLongBits(p.getY());
-            int xHash = (int)(xBits ^ (xBits >>> 32));
-            int yHash = (int)(yBits ^ (yBits >>> 32));
-            hash ^= xHash ^ yHash;
+            hash = 31 * hash + p.hashCode();
         }
         return hash;
     }

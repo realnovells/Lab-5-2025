@@ -4,6 +4,8 @@ public class FunctionPoint implements Cloneable {
     private double x;
     private double y;
 
+    public static final double EPS = 1e-10;
+
     public FunctionPoint(double x, double y) {
         this.x = x;
         this.y = y;
@@ -32,8 +34,11 @@ public class FunctionPoint implements Cloneable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof FunctionPoint)) return false;
+
         FunctionPoint p = (FunctionPoint) o;
-        return Double.compare(x, p.x) == 0 && Double.compare(y, p.y) == 0;
+
+        return Math.abs(this.x - p.x) < EPS &&
+                Math.abs(this.y - p.y) < EPS;
     }
 
     @Override

@@ -129,48 +129,44 @@ public class LinkedListTabulatedFunction implements TabulatedFunction, Externali
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof TabulatedFunction)) return false;
-
         TabulatedFunction other = (TabulatedFunction) o;
         if (this.size != other.getPointsCount()) return false;
 
         if (other instanceof LinkedListTabulatedFunction ll) {
             FunctionNode thisNode = this.head.next;
             FunctionNode otherNode = ll.head.next;
+
             while (thisNode != head) {
-                if (Double.compare(thisNode.point.getX(), otherNode.point.getX()) != 0 ||
-                        Double.compare(thisNode.point.getY(), otherNode.point.getY()) != 0)
+                if (!thisNode.point.equals(otherNode.point))
                     return false;
                 thisNode = thisNode.next;
                 otherNode = otherNode.next;
             }
             return true;
         }
-
         FunctionNode node = head.next;
         for (int i = 0; i < size; i++) {
-            FunctionPoint p = other.getPoint(i);
-            if (Double.compare(node.point.getX(), p.getX()) != 0 ||
-                    Double.compare(node.point.getY(), p.getY()) != 0)
+            if (!node.point.equals(other.getPoint(i)))
                 return false;
             node = node.next;
         }
         return true;
     }
 
+
     @Override
     public int hashCode() {
         int hash = size;
         FunctionNode node = head.next;
+
         while (node != head) {
-            long xBits = Double.doubleToLongBits(node.point.getX());
-            long yBits = Double.doubleToLongBits(node.point.getY());
-            int xHash = (int) (xBits ^ (xBits >>> 32));
-            int yHash = (int) (yBits ^ (yBits >>> 32));
-            hash ^= xHash ^ yHash;
+            hash = 31 * hash + node.point.hashCode();
             node = node.next;
         }
+
         return hash;
     }
+
 
     @Override
     public TabulatedFunction clone() {
